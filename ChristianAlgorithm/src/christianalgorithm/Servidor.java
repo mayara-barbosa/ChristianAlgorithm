@@ -10,6 +10,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -35,26 +36,19 @@ public class Servidor {
             Socket socket = serverSocket.accept();
             BufferedReader buf = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             DataInputStream in = new DataInputStream(socket.getInputStream());
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream()); 
+            PrintWriter out =  new PrintWriter(socket.getOutputStream(), true);
+            DataOutputStream output = new DataOutputStream(socket.getOutputStream()); 
             
-            final long durationI;
-            final long startTime = System.nanoTime();
-            String msg = in.readUTF(); 
-            DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-            Date date = new Date();
-            String serverTime = dateFormat.format(date);
-            final long endTime = System.nanoTime();
-            durationI = endTime - startTime;
-                
-            serv.enviaMsg(out, serverTime, durationI);
+                    
+            serv.enviaMsg(out);
         }
     
     
     }
-    public void enviaMsg( DataOutputStream out, String msg, long i) throws IOException, InterruptedException{
+    public void enviaMsg( PrintWriter out) throws IOException, InterruptedException{
         Random rand= new Random();
         Thread.sleep(rand.nextInt(1000));
-        out.writeUTF(msg);
-        out.writeLong(i);
+        out.println(System.currentTimeMillis()+5000);
+
     }
 }

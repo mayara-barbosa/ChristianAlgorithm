@@ -10,9 +10,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -27,21 +30,27 @@ public class Cliente {
     
         Cliente cli = new Cliente();
         Socket clientSocket = new Socket(InetAddress.getLocalHost(), 5555);
+        PrintWriter out =  new PrintWriter(clientSocket.getOutputStream(), true);
         DataInputStream in = new DataInputStream(clientSocket.getInputStream());
-        DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+        DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream());
         BufferedReader buf = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         
         String clientTime = "21:49:22";
-        final long t0 = System.nanoTime();
+       
         
-        cli.enviaMsg(out, "quero o horario certo");
-        long rightTime = Long.parseLong(in.readUTF());
-        long i = in.readLong();
-        final long t1 = System.nanoTime();
-        long d = t1 - t0 - i;
         
-        long T = rightTime +  d;
-        System.out.println(T);
+        long T0;
+        long serverTime;
+        long T1;
+        long finalTime;                
+        out.println(T0=System.currentTimeMillis());
+        serverTime = Long.parseLong(in.readLine());
+        T1 =System.currentTimeMillis();
+        finalTime =  serverTime + (T1-T0)/2;
+        DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+        System.out.println("Client Time: " + formatter.format(new Date(T1)));
+        System.out.println("Server Time: " + formatter.format(new Date(serverTime)));
+        System.out.println("Client Time after reset: " + formatter.format(new Date(finalTime)));
    
     
     }
